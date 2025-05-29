@@ -1,0 +1,23 @@
+[project]
+name = "retry-function"
+version = "0.1.0"
+description = "retry-function is a lightweight and configurable Python decorator that adds retry capability with exponential backoff to any synchronous or asynchronous function. It provides easy-to-use, robust retry logic with optional logging and customizable exception handling to make your code more resilient to transient failures."
+readme = "README.md"
+authors = [
+    {name = "umar-anzar", email = "omer.anzar2@gmail.com"}
+]
+
+[project.license]
+text = "MIT"
+
+requires-python = ">=3.7,<3.13"
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/Hoopoes/retry-function"
+
+[dependency-groups]
+dev = [
+    "pytest>=7.4.4",
+    "pytest-asyncio>=0.24.0",
+]
