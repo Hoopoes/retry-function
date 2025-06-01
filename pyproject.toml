@@ -1,16 +1,38 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project]
 name = "retry-function"
-version = "0.1.0"
+version = "0.0.1"
 description = "retry-function is a lightweight and configurable Python decorator that adds retry capability with exponential backoff to any synchronous or asynchronous function. It provides easy-to-use, robust retry logic with optional logging and customizable exception handling to make your code more resilient to transient failures."
 readme = "README.md"
 authors = [
     {name = "umar-anzar", email = "omer.anzar2@gmail.com"}
 ]
+license = 'MIT'
+license-files = ['LICENSE']
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License", 
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Typing :: Typed",
+  "Natural Language :: English",
+  "Framework :: AsyncIO"
+]
 
-[project.license]
-text = "MIT"
+# [project.license]
+# text = "MIT"
 
-requires-python = ">=3.7,<3.13"
+requires-python = ">=3.8"
 dependencies = []
 
 [project.urls]
@@ -21,3 +43,10 @@ dev = [
     "pytest>=7.4.4",
     "pytest-asyncio>=0.24.0",
 ]
+
+
+[[tool.uv.index]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+publish-url = "https://test.pypi.org/legacy/"
+explicit = true

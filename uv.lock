@@ -120,8 +120,8 @@ wheels = [
 
 [[package]]
 name = "retry-function"
-version = "0.1.0"
-source = { virtual = "." }
+version = "0.0.1"
+source = { editable = "." }
 
 [package.dev-dependencies]
 dev = [

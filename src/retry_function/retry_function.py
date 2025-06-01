@@ -1,4 +1,5 @@
 from __future__ import annotations
+import random
 import time
 import inspect
 import asyncio
@@ -30,33 +31,41 @@ def _log_success(attempt: int, logger: Optional[Logger]) -> None:
         msg = f"[retry] Succeeded after {attempt} attempts"
         (logger.info if logger else print)(msg)
 
-def _calc_delay(base: float, attempt: int) -> float:
-    return base * (2 ** (attempt - 1))
+def _calc_delay(base: float, attempt: int, jitter: Union[bool, float]) -> float:
+    delay = base * (2 ** (attempt - 1))
+    if jitter is True:
+        return random.uniform(0, delay)  # Full jitter
+    elif isinstance(jitter, (int, float)) and jitter > 0:
+        return delay + random.uniform(0, jitter)  # Additive jitter
+    return delay
 
 @overload
 def retry(
+    catch_errors: Union[Type[E], tuple[Type[E]]],
     tries: int = ...,
     delay: float = ...,
-    catch_errors: Union[Type[E], tuple[Type[E], ...]] = ...,
     throw_error: Optional[Exception] = ...,
-    logger: Optional[Logger] = ...
+    logger: Optional[Logger] = ...,
+    jitter: Union[bool, float] = ...,
 ) -> Callable[[Callable[P, R]], Callable[P, R]]: ...
 
 @overload
 def retry(
+    catch_errors: Union[Type[E], tuple[Type[E]]],
     tries: int = ...,
     delay: float = ...,
-    catch_errors: Union[Type[E], tuple[Type[E], ...]] = ...,
     throw_error: Optional[Exception] = ...,
-    logger: Optional[Logger] = ...
+    logger: Optional[Logger] = ...,
+    jitter: Union[bool, float] = ...,
 ) -> Callable[[Callable[P, Awaitable[R]]], Callable[P, Awaitable[R]]]: ...
 
 def retry(
+    catch_errors: Union[Type[E], tuple[Type[E]]],
     tries: int = 3,
     delay: float = 1,
-    catch_errors: Union[Type[E], tuple[Type[E], ...]] = Exception,
     throw_error: Optional[Exception] = None,
-    logger: Optional[Logger] = None
+    logger: Optional[Logger] = None,
+    jitter: Union[bool, float] = False
 ) -> Callable[[Callable[P, R]], Callable[P, R]] | Callable[[Callable[P, Awaitable[R]]], Callable[P, Awaitable[R]]]:
     """Configurable retry decorator with exponential backoff and logging."""
     
@@ -76,7 +85,7 @@ def retry(
                     last_exc = e
                     _log_retry(attempt, e, logger)
                     if attempt < tries:
-                        time.sleep(_calc_delay(delay, attempt))
+                        time.sleep(_calc_delay(delay, attempt, jitter))
             _log_failure(tries, last_exc, logger)
             raise throw_error or last_exc or RuntimeError("Retry failed")
         
@@ -92,7 +101,7 @@ def retry(
                     last_exc = e
                     _log_retry(attempt, e, logger)
                     if attempt < tries:
-                        await sleep_fn(_calc_delay(delay, attempt))
+                        await sleep_fn(_calc_delay(delay, attempt, jitter))
             _log_failure(tries, last_exc, logger)
             raise throw_error or last_exc or RuntimeError("Retry failed")
         
