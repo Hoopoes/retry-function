@@ -119,7 +119,7 @@ wheels = [
 ]
 
 [[package]]
-name = "retry-function"
+name = "retrytools"
 version = "0.0.1"
 source = { editable = "." }
 

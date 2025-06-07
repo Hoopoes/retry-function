@@ -1,6 +1,6 @@
 import pytest
 import logging
-from retry_function import retry
+from retrytools import retry
 
 # ------------------------
 # Fixtures

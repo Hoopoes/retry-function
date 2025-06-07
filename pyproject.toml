@@ -3,9 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "retry-function"
+name = "retrytools"
 version = "0.0.1"
-description = "retry-function is a lightweight and configurable Python decorator that adds retry capability with exponential backoff to any synchronous or asynchronous function. It provides easy-to-use, robust retry logic with optional logging and customizable exception handling to make your code more resilient to transient failures."
+description = "A Python decorator for retrying functions with exponential backoff, optional jitter, and support for both sync and async code."
 readme = "README.md"
 authors = [
     {name = "umar-anzar", email = "omer.anzar2@gmail.com"}
@@ -29,14 +29,11 @@ classifiers = [
   "Framework :: AsyncIO"
 ]
 
-# [project.license]
-# text = "MIT"
-
 requires-python = ">=3.8"
 dependencies = []
 
 [project.urls]
-Repository = "https://github.com/Hoopoes/retry-function"
+Repository = "https://github.com/Hoopoes/retrytools"
 
 [dependency-groups]
 dev = [
