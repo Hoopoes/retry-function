@@ -153,9 +153,15 @@ wheels = [
 
 [[package]]
 name = "retrytools"
-version = "0.0.2"
+version = "0.0.3"
 source = { editable = "." }
 dependencies = [
+    { name = "typing-extensions", version = "4.13.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.9'" },
+    { name = "typing-extensions", version = "4.14.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.9'" },
+]
+
+[package.optional-dependencies]
+typing = [
     { name = "typing-extensions", version = "4.13.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.9'" },
     { name = "typing-extensions", version = "4.14.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.9'" },
 ]
@@ -169,7 +175,11 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "typing-extensions", specifier = ">=4.13.2" }]
+requires-dist = [
+    { name = "typing-extensions", specifier = ">=4.13.2" },
+    { name = "typing-extensions", marker = "extra == 'typing'", specifier = ">=4.13.2" },
+]
+provides-extras = ["typing"]
 
 [package.metadata.requires-dev]
 dev = [
