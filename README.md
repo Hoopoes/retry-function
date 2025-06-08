@@ -77,7 +77,7 @@ from retrytools import retry
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-@retry(catch_errors=RuntimeError, tries=4, throw_error=Exception("Custom"), delay=2, logger=logger, jitter=True)
+@retry(catch_errors=(RuntimeError, ConnectionError), tries=4, throw_error=Exception("Custom"), delay=2, logger=logger, jitter=True)
 def sometimes_fails():
     if random.randint(0, 1):
         raise RuntimeError("Oops!")
