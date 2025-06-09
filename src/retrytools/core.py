@@ -1,27 +1,22 @@
-from __future__ import annotations
-import random
 import time
+import random
 import inspect
 import asyncio
 from logging import Logger
 from functools import wraps
-try:
-    from typing import ParamSpec  # Python 3.10+
-except ImportError:
-    from typing_extensions import ParamSpec  # For Python < 3.10
-from typing import Awaitable, Callable, TypeVar, Type, Union, Optional
+from typing import Awaitable, Callable, Tuple, TypeVar, Type, Union, Optional
 
 
 
-P = ParamSpec('P')
 R = TypeVar('R')
 E = TypeVar('E', bound=Exception)
 
 
+RetryDecorator = Union[
+    Callable[..., R],
+    Callable[..., Awaitable[R]]
+]
 LogHandler = Optional[Union[Logger, Callable[[str], None]]]
-Retry = Callable[[Callable[P, R]], Callable[P, R]]
-AsyncRetry = Callable[[Callable[P, Awaitable[R]]], Callable[P, Awaitable[R]]]
-RetryDecorator = Union[Retry, AsyncRetry]
 
 
 def _log_retry(attempt: int, e: Exception, logger: LogHandler) -> None:
@@ -55,7 +50,7 @@ def _calc_delay(base: float, attempt: int, jitter: Union[bool, float]) -> float:
 
 
 def retry(
-    catch_errors: Union[Type[E], tuple[Type[E], ...]],
+    catch_errors: Union[Type[E], Tuple[Type[E], ...]],
     tries: int = 3,
     delay: float = 1,
     throw_error: Optional[Exception] = None,
@@ -70,7 +65,7 @@ def retry(
     functions transparently.
 
     Args:
-        catch_errors (Type[Exception] or tuple[Type[Exception], ...]):
+        catch_errors (Type[Exception] or Tuple[Type[Exception], ...]):
             Exception type(s) to catch and retry on.
         tries (int): 
             Total number of attempts (initial call + retries). Default is 3.
@@ -93,11 +88,11 @@ def retry(
         Exception: The last caught exception, or `throw_error` if provided.
     """
     
-    def decorator(func: Callable[P, R]) -> Callable[P, R]:
+    def decorator(func: RetryDecorator) -> RetryDecorator:
         is_async = inspect.iscoroutinefunction(func)
         
         @wraps(func)
-        def sync_wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
+        def sync_wrapper(*args, **kwargs) -> R:
             last_exc = None
             for attempt in range(1, tries+1):
                 try:
@@ -113,7 +108,7 @@ def retry(
             raise throw_error or last_exc or RuntimeError("Retry failed")
         
         @wraps(func)
-        async def async_wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
+        async def async_wrapper(*args, **kwargs) -> R:
             last_exc = None
             for attempt in range(1, tries+1):
                 try:

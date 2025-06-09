@@ -90,7 +90,7 @@ sometimes_fails()
 ## 📌 Notes
 
 * **Jitter** is helpful to avoid retry storms in distributed systems.
-* Supports Python 3.8+.
+* Supports Python 3.7+.
 * Works transparently for both sync and async code.
 
 
